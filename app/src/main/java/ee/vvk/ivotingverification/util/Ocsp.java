@@ -21,74 +21,98 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class Ocsp {
     private static final String TAG = "OCSP";
+    private final BasicOCSPResp basicOcspResp;
 
-    public static long verifyResponse(InputStream response, List<ContentVerifierProvider> ocspVerifiers,
-                                      X509Certificate requestedCert, X509Certificate issuerCert) throws Exception {
+    public Ocsp(InputStream response) throws Exception {
         OCSPResp ocspResp = new OCSPResp(response);
-        if (ocspResp.getStatus() != OCSPResp.SUCCESSFUL) {
-            throw new Exception("Ocsp response status value not 0: " + ocspResp.getStatus());
+        if (ocspResp.getStatus() == OCSPResp.SUCCESSFUL) {
+            this.basicOcspResp = basicResp(ocspResp.getResponseObject());
+        } else {
+            throw new Exception("Ocsp response status not successful: " + ocspResp.getStatus());
         }
-        Object respObject = ocspResp.getResponseObject();
-        if (!(respObject instanceof BasicOCSPResp)) {
+    }
+
+    private static BasicOCSPResp basicResp(Object respObject) throws Exception {
+        if (!(respObject instanceof BasicOCSPResp basicResp)) {
             throw new Exception("Ocsp response is not basic");
         }
-        BasicOCSPResp basicResp = (BasicOCSPResp) respObject;
+        return basicResp;
+    }
 
+    public void verifySignature(List<ContentVerifierProvider> ocspVerifiers, X509Certificate issuerCert) throws Exception {
         boolean verified = false;
-        for (ContentVerifierProvider verifier: ocspVerifiers) {
-            if (basicResp.isSignatureValid(verifier)) {
+        for (ContentVerifierProvider verifier : ocspVerifiers) {
+            if (basicOcspResp.isSignatureValid(verifier)) {
                 verified = true;
                 break;
             }
         }
         if (!verified) {
             Util.logInfo(TAG, "Preconfigured OCSP responders not suitable, trying AIA");
-            verified = checkAIAResponder(basicResp, issuerCert);
+            verified = checkAIAResponder(basicOcspResp, issuerCert);
         }
 
         if (!verified) {
             throw new Exception("Signature verification failed");
         }
+    }
 
+    public void verifyResponse(X509Certificate requestedCert) throws Exception {
+        SingleResp[] responses = basicOcspResp.getResponses();
+        for (SingleResp resp : responses) {
+            if (!isResponseStatusGood(resp) || !isOcspAndCertMatchValid(resp, requestedCert))
+                continue;
+            return;
+        }
+        throw new Exception("Couldn't verify ocsp response");
+    }
+
+    private boolean isOcspAndCertMatchValid(SingleResp resp, X509Certificate requestedCert) throws Exception {
+        CertificateID id = resp.getCertID();
+        byte[] certAuthorityKeyID = getAuthorityKey(requestedCert);
+        if (!requestedCert.getSerialNumber().equals(id.getSerialNumber())) {
+            Util.logWarning(TAG, "Cert's and Ocsp responses serial numbers do not match");
+            return false;
+        }
+        MessageDigest digest = MessageDigest.getInstance(id.getHashAlgOID().toString(), "SC");
+        if (!Arrays.equals(certAuthorityKeyID, id.getIssuerKeyHash())) {
+            Util.logWarning(TAG, "Cert's and ocsp's authority key hash do not match");
+            return false;
+        }
+
+        byte[] dn;
+        try {
+            dn = digest.digest(((X509Principal) requestedCert.getIssuerDN()).getEncoded());
+        } catch (Exception e) {
+            dn = digest.digest(new X509Principal(true, requestedCert.getIssuerDN().getName()).getEncoded());
+        }
+
+        if (!Arrays.equals(dn, id.getIssuerNameHash())) {
+            Util.logWarning(TAG, "Cert's and ocsp's issuer DN hash do not match");
+            return false;
+        }
+        return true;
+    }
+
+    private byte[] getAuthorityKey(X509Certificate requestedCert) throws Exception {
         byte[] authorityKeyId = requestedCert.getExtensionValue("2.5.29.35");
         if (authorityKeyId != null) {
-            authorityKeyId = Arrays.copyOfRange(authorityKeyId, 6, authorityKeyId.length);
+            return Arrays.copyOfRange(authorityKeyId, 6, authorityKeyId.length);
         } else {
             throw new Exception("Certificate verification failed");
         }
+    }
 
-        SingleResp[] responses = basicResp.getResponses();
-        for (SingleResp resp: responses) {
-            if (resp.getCertStatus() != CertificateStatus.GOOD) {
-                Util.logWarning(TAG, "Ocsp SingleResponse cert status not GOOD: " + resp.getCertStatus());
-                continue;
-            }
-            CertificateID id = resp.getCertID();
-            if (!requestedCert.getSerialNumber().equals(id.getSerialNumber())) {
-                Util.logWarning(TAG, "Cert's and Ocsp responses serial numbers do not match");
-                continue;
-            }
-            MessageDigest digest = MessageDigest.getInstance(id.getHashAlgOID().toString(), "SC");
-            if (!Arrays.equals(authorityKeyId, id.getIssuerKeyHash())) {
-                Util.logWarning(TAG, "Cert's and ocsp's authority key hash do not match");
-                continue;
-            }
+    public long getProducedAt() {
+        return basicOcspResp.getProducedAt().getTime();
+    }
 
-            byte[] dn;
-            try {
-                dn = digest.digest(((X509Principal) requestedCert.getIssuerDN()).getEncoded());
-            } catch (Exception e) {
-                dn = digest.digest(new X509Principal(true, requestedCert.getIssuerDN().getName()).getEncoded());
-            }
-
-            if (!Arrays.equals(dn, id.getIssuerNameHash())) {
-                Util.logWarning(TAG, "Cert's and ocsp's issuer DN hash do not match");
-                continue;
-            }
-            // reach here if all the checks are successful
-            return basicResp.getProducedAt().getTime();
+    private boolean isResponseStatusGood(SingleResp resp) {
+        if (resp.getCertStatus() != CertificateStatus.GOOD) {
+            Util.logWarning(TAG, "Ocsp SingleResponse cert status not GOOD: " + resp.getCertStatus());
+            return false;
         }
-        throw new Exception("Couldn't verify ocsp response");
+        return true;
     }
 
     private static boolean checkAIAResponder(BasicOCSPResp basicResp, X509Certificate issuerCert) throws Exception {

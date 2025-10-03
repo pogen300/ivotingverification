@@ -12,4 +12,14 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
+    <style name="BaseButton">
+        <item name="android:background">@drawable/rounded_btn</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#727272</item>
+        <item name="android:padding">4dp</item>
+    </style>
 </resources>

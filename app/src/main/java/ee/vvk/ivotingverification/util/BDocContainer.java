@@ -42,8 +42,6 @@ public class BDocContainer {
             "xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" " +
             "xmlns:xades=\"http://uri.etsi.org/01903/v1.3.2#\"";
     private static final int MAX_FILE_SIZE = 1024 * 1024; // 1MB
-    private static final String RSA_OID = "1.2.840.113549.1.1.1";
-
 
     private final String ballotNameRegex;
 
@@ -72,27 +70,34 @@ public class BDocContainer {
             byte[] regData) throws Exception {
 
 		BDocContainer container = new BDocContainer(
-                new ByteArrayInputStream(containerData), verificationProfile.getPublicKey().elId);
+                new ByteArrayInputStream(containerData), verificationProfile.publicKey().getElectionID());
 		container.parseContainer();
-		container.validateContainer(verificationProfile.getEsteidCerts());
+		container.validateContainer(verificationProfile.esteidCerts());
 
-		long producedAt = Ocsp.verifyResponse(new ByteArrayInputStream(ocspData),
-                verificationProfile.getOcspCerts(), container.cert, container.issuer);
+        Ocsp ocsp = new Ocsp(new ByteArrayInputStream(ocspData));
+        ocsp.verifySignature(verificationProfile.ocspCerts(), container.issuer);
+        ocsp.verifyResponse(container.cert);
 
-		long genTime = Pkix.verifyResponse(regData,
-                verificationProfile.getTspregClientCert().getPublicKey(),
-                verificationProfile.getTspregServiceCert(),
-                container.getSignatureValueCanon());
+        Pkix pkix = new Pkix(regData);
+        pkix.validateToken(verificationProfile.tspregServiceCert());
+        pkix.verifySignature(verificationProfile.tspregClientCert().getPublicKey(), container.getSignatureValueCanon());
 
-		long d = genTime - producedAt;
-		if (d < 0) {
-			throw new Exception("PKIX predates OCSP");
-		}
-		if (d > Util.MAX_TIME_BETWEEN_OCSP_PKIX) {
-			throw new Exception("PKIX and OCSP timestamps too far apart");
-		}
-		return container;
+		if (pkixPredatesOcsp(pkix, ocsp, Util.MAX_TIME_BETWEEN_OCSP_PKIX)) return container;
+        else return null;
 	}
+
+    public static boolean pkixPredatesOcsp(Pkix pkix, Ocsp ocsp, long maxTimeMs) throws Exception {
+        long ocspTime = ocsp.getProducedAt();
+        long tsaTime = pkix.getGenTime();
+        long timeDiff = ocspTime - tsaTime;
+        if (timeDiff < 0) {
+            throw new Exception("OCSP predates PKIX");
+        }
+        if (timeDiff > maxTimeMs) {
+            throw new Exception("PKIX and OCSP timestamps too far apart");
+        }
+        return true;
+    }
 
     private BDocContainer(InputStream in, String electionName) {
         try {
@@ -178,7 +183,7 @@ public class BDocContainer {
         CertificateFactory cf = CertificateFactory.getInstance("X.509", "SC");
         byte[] certData = Base64.decode(node.getValue(), Base64.DEFAULT);
         cert = (X509Certificate)cf.generateCertificate(new ByteArrayInputStream(certData));
-		signerCN = Util.getSubjectCN(cert);
+        signerCN = Util.getSubjectCN(cert);
 		String issuerCN = Util.getIssuerCN(cert);
 
         try {
@@ -212,17 +217,11 @@ public class BDocContainer {
     }
 
     private void verifySignature(byte[] signedInfo, String sig, PublicKey pk) throws Exception {
-        String signingAlgStr = null;
-        switch (signingAlg) {
-            case SHA256_RSA:
-                signingAlgStr = "SHA256withRSA";
-                break;
-            case SHA256_ECDSA:
-                signingAlgStr = "SHA256withECDSA";
-                break;
-            case SHA384_ECDSA:
-                signingAlgStr = "SHA384withECDSA";
-        }
+        String signingAlgStr = switch (signingAlg) {
+            case SHA256_RSA -> "SHA256withRSA";
+            case SHA256_ECDSA -> "SHA256withECDSA";
+            case SHA384_ECDSA -> "SHA384withECDSA";
+        };
         Signature signature = Signature.getInstance(signingAlgStr, "SC");
         signature.initVerify(pk);
         signature.update(signedInfo);

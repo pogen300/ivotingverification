@@ -13,12 +13,14 @@ import ee.vvk.ivotingverification.model.QRCodeContents;
 import ee.vvk.ivotingverification.model.VoteContainerInfo;
 import ee.vvk.ivotingverification.util.C;
 import ee.vvk.ivotingverification.util.Util;
+import ee.vvk.ivotingverification.util.accessibility.AccessibilityDelegate;
 
 
 public class VoteReceivedActivity extends Activity {
 
     private VoteContainerInfo voteContainerInfo;
     private QRCodeContents qrCodeContents;
+    private final AccessibilityDelegate accessibilityDelegate = new AccessibilityDelegate();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,26 +50,43 @@ public class VoteReceivedActivity extends Activity {
 
         TextView lblVoteSigner = findViewById(R.id.vote_signer_label);
         lblVoteSigner.setTypeface(C.typeFace);
-        lblVoteSigner.setText(
-                getString(R.string.lblVoteSinger,C.lblVoteSigner,voteContainerInfo.getSignerCN()));
+        String lblVoteSignerText = getString(R.string.lblVoteSinger,C.lblVoteSigner,voteContainerInfo.getSignerCN());
+        lblVoteSigner.setText(lblVoteSignerText);
         lblVoteSigner.setTextColor(Util.generateHexColorValue(C.lblOuterContainerForeground));
+        accessibilityDelegate.textToLowercase(lblVoteSigner, lblVoteSignerText);
 
         Button btnVoteVerify = findViewById(R.id.vote_btn_verify);
         btnVoteVerify.setTypeface(C.typeFace);
         btnVoteVerify.setText(C.btnVerify);
-        btnVoteVerify.setTextColor(Util.generateHexColorValue(C.btnVerifyForeground));
-        int[] colors = new int[3];
-        colors[0] = Util.generateHexColorValue(C.btnVerifyBackgroundStart);
-        colors[1] = Util.generateHexColorValue(C.btnVerifyBackgroundCenter);
-        colors[2] = Util.generateHexColorValue(C.btnVerifyBackgroundEnd);
-
-        GradientDrawable bgVoteVerifyShape = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM, colors);
-        bgVoteVerifyShape.setCornerRadius(5);
-        btnVoteVerify.setBackground(bgVoteVerifyShape);
+        setVerifyButtonColors(btnVoteVerify);
         btnVoteVerify.setOnClickListener(this::clickVerifyButton);
         btnVoteVerify.setClickable(true);
         btnVoteVerify.setVisibility(android.view.View.VISIBLE);
+    }
+
+    private void setVerifyButtonColors(Button verifyButton) {
+        verifyButton.setTextColor(Util.generateHexColorValue(C.btnVerifyForeground));
+
+        int[] defaultColors = new int[3];
+        defaultColors[0] = Util.generateHexColorValue(C.btnVerifyBackgroundStart);
+        defaultColors[1] = Util.generateHexColorValue(C.btnVerifyBackgroundCenter);
+        defaultColors[2] = Util.generateHexColorValue(C.btnVerifyBackgroundEnd);
+        GradientDrawable bgVoteVerifyShapeDefault = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, defaultColors);
+        bgVoteVerifyShapeDefault.setCornerRadius(5);
+        verifyButton.setBackground(bgVoteVerifyShapeDefault);
+
+        GradientDrawable bgVoteVerifyShapeFocused = new GradientDrawable();
+        bgVoteVerifyShapeFocused.setCornerRadius(5);
+        bgVoteVerifyShapeFocused.setColor(Util.generateHexColorValue(C.btnVerifyBackgroundFocused));
+
+        verifyButton.setOnFocusChangeListener((view, isFocused) -> {
+            if (isFocused) {
+                view.setBackground(bgVoteVerifyShapeFocused);
+            } else {
+                view.setBackground(bgVoteVerifyShapeDefault);
+            }
+        });
     }
 
     @Override
@@ -76,7 +95,7 @@ public class VoteReceivedActivity extends Activity {
         finish();
     }
 
-    public void clickVerifyButton(View view) {
+    private void clickVerifyButton(View view) {
         Intent next_intent = new Intent(this, DecryptionActivity.class);
         next_intent.putExtra(Util.QR_CODE_CONTENTS, qrCodeContents);
         next_intent.putExtra(Util.VOTE_CONTAINER_INFO, voteContainerInfo);

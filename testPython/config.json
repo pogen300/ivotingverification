@@ -1,0 +1,87 @@
+{
+    "appConfig": {
+        "params": {
+            "verification_tls": [
+                "-----BEGIN CERTIFICATE-----\nMIIFMjCCBBqgAwIBAgISBI5jfIlDoUButLXxa6t6jOTlMA0GCSqGSIb3DQEBCwUA\nMDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\nEwJSMzAeFw0yMzA1MDIwNTEwNThaFw0yMzA3MzEwNTEwNTdaMCExHzAdBgNVBAMT\nFmthc3Bhci5kZXYudGl2aS5nbG9iYWwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw\nggEKAoIBAQDZ7AU53rD7YuV0Ts0+UVk92g8ZgFCwgB8cCOxFCV9oAZ2gCchipHf2\n8WtzzYw9XREWgUcx1UrLeAgnH6kEKY2YRwZVM0DL8r7MF4pEUyYOsgMSMm9JaiLq\nOzo/RH25MCcNwFLSUkdDj/hSFDsjRzDmFFifM4jxYiP2e5C01eVvpoYMM0ODuN5u\neimxWrrwufKAmg8TgSh4K4BHsVmjHX31t7vkUU1auk/0q/ud5JffkYpe9rBtbj2x\nb5P9EJX8AdU98a8bAY4B45OnwdOnfvZehTJsPWHJFk24WfiUujIdhN9Tne3IXyq/\nVfEUVPMmV1RrCNc+g12y8jcs+YScZJUnAgMBAAGjggJRMIICTTAOBgNVHQ8BAf8E\nBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAwGA1UdEwEB/wQC\nMAAwHQYDVR0OBBYEFJM2QPjhBMU434uyHYw/G2Y0r8NLMB8GA1UdIwQYMBaAFBQu\nsxe3WFbLrlAJQOYfr52LFMLGMFUGCCsGAQUFBwEBBEkwRzAhBggrBgEFBQcwAYYV\naHR0cDovL3IzLm8ubGVuY3Iub3JnMCIGCCsGAQUFBzAChhZodHRwOi8vcjMuaS5s\nZW5jci5vcmcvMCEGA1UdEQQaMBiCFmthc3Bhci5kZXYudGl2aS5nbG9iYWwwTAYD\nVR0gBEUwQzAIBgZngQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYa\naHR0cDovL2Nwcy5sZXRzZW5jcnlwdC5vcmcwggEEBgorBgEEAdZ5AgQCBIH1BIHy\nAPAAdgB6MoxU2LcttiDqOOBSHumEFnAyE4VNO9IrwTpXo1LrUgAAAYfbFedoAAAE\nAwBHMEUCIQDByK0CTpdrDuK7nbff0WYM8sluVQoUKb5sNamqxXVMRAIgWhMd/cJE\nPmcK8vVUe9AnViO5Aga4hVgWiv4ZpXt79rkAdgDoPtDaPvUGNTLnVyi8iWvJA9PL\n0RFr7Otp4Xd9bQa9bgAAAYfbFedPAAAEAwBHMEUCIQChbFIB5hwR6AdKMqy+8a/x\n7kqfZVA30AI+HkuDur99FwIgWaqgPYFUyDCzbJEG5gM9CXRuDupnpysPNpxCzkm9\n+LwwDQYJKoZIhvcNAQELBQADggEBAAywdInLnS2GNa0yanymNFdhPqtIQO0GSk+A\nk1QGZibDxunyYqyFsZ1+uRRPzS7mlwXC7mSvagbHztMdkOBe5PzMXtJw0BeesRGJ\ncO579IX5QdC2EYAUpP1k/mW5T+XWYNKLue3H54bKidxVfhAGrdcw4DoKAEqv66Wd\nSlipIgs7bYmZuXT2KZTxWCTGG6br+DQQGif3pLGCimKL7IvcjPfmo7wzoVfsxTjW\nGY4NqpYD02jWNGsjdlHmAKultVv/BKjHleuxjfdbl7grcPi7khekgOkIGWH0QJ9C\nsQb7kljQyJabDfq1Q7bZV/zINIajyRZLNVBjLQrLO76dj60J2sg=\n-----END CERTIFICATE-----\n"
+            ],
+            "ocsp_service_cert": [
+                "-----BEGIN CERTIFICATE-----\nMIIEzjCCA7agAwIBAgIQa7w4iGoiIOtfrn0fG/hc1zANBgkqhkiG9w0BAQUFADB9\nMQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1\nczEwMC4GA1UEAwwnVEVTVCBvZiBFRSBDZXJ0aWZpY2F0aW9uIENlbnRyZSBSb290\nIENBMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUwHhcNMjAxMTEzMTIzMzM1WhcN\nMjQwNjEzMTEzMzM1WjCBgzELMAkGA1UEBhMCRUUxIjAgBgNVBAoMGUFTIFNlcnRp\nZml0c2VlcmltaXNrZXNrdXMxDTALBgNVBAsMBE9DU1AxJzAlBgNVBAMMHlRFU1Qg\nb2YgU0sgT0NTUCBSRVNQT05ERVIgMjAyMDEYMBYGCSqGSIb3DQEJARYJcGtpQHNr\nLmVlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz6U1uMvi5P6bycik\ngOFp1QdIdt2R/x/+WbRVNLNjDTMS0t70BVl6+Z7c5jqZUNIBZ5qlr3K8v5bIv0rd\nr1H/By0wFMWsWksZnQLIsb/lU+HeuSIDY2ESs0YzvZW4AB3tDrMFOrtuImmsUxhs\nz00KcRt9o+/o0RD9v5qxhJaqj6+Pr/8fZJK67Wuiqli2vVtuStaTb5zpjA1MJtu9\nOM4jk/FaL1FaST72XPTzpMVNJR/Rk63t0wL4l4f4s3y0ZI+JPzXu3jyeH+g3ZVLb\nwB2ccwgqfDPKXoxfNtcDxjUZz16OQQp2Rp14h/n8If0jyHfiNHHCDKaSPFyyJJMg\nRrQkiwIDAQABo4IBQTCCAT0wEwYDVR0lBAwwCgYIKwYBBQUHAwkwHQYDVR0OBBYE\nFIGteMcJzpGYrEl+MRkb+QpBx6XFMIGgBgNVHSAEgZgwgZUwgZIGCisGAQQBzh8D\nAQEwgYMwWAYIKwYBBQUHAgIwTB5KAEEAaQBuAHUAbAB0ACAAdABlAHMAdABpAG0A\naQBzAGUAawBzAC4AIABPAG4AbAB5ACAAZgBvAHIAIAB0AGUAcwB0AGkAbgBnAC4w\nJwYIKwYBBQUHAgEWG2h0dHA6Ly93d3cuc2suZWUvYWphdGVtcGVsLzAfBgNVHSME\nGDAWgBS1NAqdpS8QxechDr7EsWVHGwN2/jBDBgNVHR8EPDA6MDigNqA0hjJodHRw\nczovL3d3dy5zay5lZS9yZXBvc2l0b3J5L2NybHMvdGVzdF9lZWNjcmNhLmNybDAN\nBgkqhkiG9w0BAQUFAAOCAQEAKR+ssgVTDDkGl+sLwz5OwaBMUOPEscr7DcCXmjmR\naC+KjTe8kCuXZwnMH7tMf0mDyF22USJ/o2m0MFW1k8zjH1yr1/2JghttRfi5mCvo\nMHNXVM/ST1C/6rrymaYA27RxIj201USwTQp35YvhUUIZO3Xby/60yXZyt7wCS7xA\nnH65U/0LnkT5w5DLC8EdXlH3QF600Z74fm8z54lY80IoSgIEPmFZlLe4YR822G24\nmawGRQKIbhPK2DO6sGtLZDAfee4B6TGmPcunztsYaUoc1spfCKrx5EBthieSgAp0\ndh0kMBAR/AGh7fSwl5zyASFgYmtVP4FZS6w6ETlXU7Bg3g==\n-----END CERTIFICATE-----\n"
+            ],
+            "public_key": "-----BEGIN PUBLIC KEY-----\nMIIDMTCCAZ8GCSsGAQQBl1UCATCCAZACggGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiK\nZ8x0Agu+pjsTmyJRSgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY3\n7WsL/1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7ORbPcIAfLihY78FmNpINhxV05ppFj+o/STP\nX4NlXSPco62WHGLzViCFUrue1SkHcJaWbWcMNU5KvJgE8XRsCMoYIXwykF5GLjbOO+OedywYDoYD\nmyeDouwHoo+1xV3wb0xSyd4ry/aVWBcYOZVJfOqVauUV0iYYmPoFEBVyjlqKqsQtrTMXDQRQejOo\nVSGr3xy6ZOz7hQRY2+8KiupxV10GDH2zlw+FpuHkx6v1rozbCTPXHoyU4EolYZ3O49ImGtLua/Ev\n+gbZighk2HYCcz7IamRSHysYF3sgDLvhF1d6YV1sdwmIwLrZRuII4k+gdOWrMUPbW/zg/RCOS4LR\nIKk60sr//////////wIBAhsGUksyMDUxA4IBigAwggGFAoIBgQD2FvlAulAD52be0c3qrVtUrASR\nPvZS3yFymKuWEfD5bIEGgI1w7n/qGHxFvL16F5fguBL8GDX3fwmZU6+JCbBTdF9l/JDkD7iLZsQB\nvqy5vPJe4GM0sbH14qwYf7T+Ar5wQbp71dPFw3+k0+0aTHpq9sjWM5paD+ZMAOwlRqfjN8/Bp+Y1\nDcekMSahp5vE+svC5e7wW0J+lSBASXarThOBzYsm9Lkv5O7muKDLtUQBR/8ab49HdTaels7W3zMt\nDX5b+8sTIdCcChBzBQ7bjW9XuPXF+LRS1XSSiB8WWyQGj1AWiDVFfipy4Kjt3QA0Ixn4G/GmSH1w\nIwoznRYvqv3+UpsUHOvw/GBgcEIZuLhuLEy53uSY8bWnI9ltuzTK+Wtt9/WhT57O8M96ipaBs/yV\nrq7tgwg+wo/nm7KuwVEaFiLcX+xMZvfVqMHpqFsMndKmj3hN57icT/i/Fva669cofv1xXjqXPcPO\nx5D18bHXLEslCoNj1pWZKir9eO7AvhQ=\n-----END PUBLIC KEY-----",
+            "tspreg_service_cert": "-----BEGIN CERTIFICATE-----\nMIIEgzCCA2ugAwIBAgIQcGzJsYR4QLlft+S73s/WfTANBgkqhkiG9w0BAQsFADB9\nMQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1\nczEwMC4GA1UEAwwnVEVTVCBvZiBFRSBDZXJ0aWZpY2F0aW9uIENlbnRyZSBSb290\nIENBMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUwHhcNMjAxMTMwMjEwMDAwWhcN\nMjUxMTMwMjEwMDAwWjB/MSwwKgYDVQQDDCNERU1PIFNLIFRJTUVTVEFNUElORyBB\nVVRIT1JJVFkgMjAyMDEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxDDAKBgNVBAsM\nA1RTQTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMQswCQYDVQQGEwJFRTCC\nASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMz8yTHQyp8gzyPnKt/CQg+0\n7c/ogDl4V1SmyFGPT+lQaYZvXIKNNZyJlzII+vNnsok6hIRvAX5ffDZs8dkeNdo8\nQOuQ81QbLn5JJT2VuSppvpnqpFCiL+uWY0/nnwNmyiDueMkUDDJavbSPCkWwmW+a\nQZCNGd+krSTL/zNHCfOt7cAVDQAL9C4Ue7olufIZoDCTqRA00S8bGbTQPyTS8uUM\nEuwWc4JYZqEu4c24bIGhbKoCOSR60WrD6cBoZXLlqwDbWdkX5SLjJ9dTCxGW+pLp\nnAWx+KqJY3HkDiSZCT46JXOaoVzmcFx3l7eqQfqWgkzRZs9TJvqQSLQ+vgSAOREC\nAwEAAaOB/DCB+TAOBgNVHQ8BAf8EBAMCBsAwFgYDVR0lAQH/BAwwCgYIKwYBBQUH\nAwgwHQYDVR0OBBYEFJ8v3/rNs6jK0l3BxyVSixDYEOJHMB8GA1UdIwQYMBaAFLU0\nCp2lLxDF5yEOvsSxZUcbA3b+MIGOBggrBgEFBQcBAQSBgTB/MCEGCCsGAQUFBzAB\nhhVodHRwOi8vZGVtby5zay5lZS9haWEwWgYIKwYBBQUHMAKGTmh0dHBzOi8vd3d3\nLnNrLmVlL3VwbG9hZC9maWxlcy9URVNUX29mX0VFX0NlcnRpZmljYXRpb25fQ2Vu\ndHJlX1Jvb3RfQ0EuZGVyLmNydDANBgkqhkiG9w0BAQsFAAOCAQEAWWkQKAbEAT77\nn8L42gw5ql7BO1fdmUgRJRRwWL9Vo9l1c50lqieR8MUToF4wpF6D0PJUx9FDcKL0\nfbURFTRuETCgGekYmCjMbVQCiv6W38vMsIdJLBWjo2oT2AjtJ2VakwkrzzSxOSBr\nF5u0hPsAkP0VkBhmW1E0DHfm1Bti2xk5t9OsJMJqfTTl8v1HXktlnxi6WdUzLBcS\ndknFePDnSYoT3xOfOz1IlB3Ta729bgglAjVBEoWyrKX4kTjZPChxseMntXaW/pN+\nAgm3Xa9hniXdK4KamzX8d8LJ+qObxmc9TXmksbWZVup0ktfJYWIHCwZjmQukAed/\npIX8UV3N9w==\n-----END CERTIFICATE-----\n",
+            "tspreg_client_cert": "-----BEGIN CERTIFICATE-----\nMIIDwTCCAqmgAwIBAgIUbfMWj71MZn3+9N3asjLEzfnfWKEwDQYJKoZIhvcNAQEL\nBQAwbzELMAkGA1UEBhMCRUUxEjAQBgNVBAoMCVNDQ0VJViBPWTEfMB0GA1UECwwW\nSVZYViBUZXN0IENlcnRpZmljYXRlczErMCkGA1UEAwwiQ29sbGVjdG9yICAgICAg\nICAgICAgIFJlZ2lzdHJhdGlvbjAgFw0yMzAxMjMxOTE5NDNaGA8yMTIyMTIzMDE5\nMTk0M1owbzELMAkGA1UEBhMCRUUxEjAQBgNVBAoMCVNDQ0VJViBPWTEfMB0GA1UE\nCwwWSVZYViBUZXN0IENlcnRpZmljYXRlczErMCkGA1UEAwwiQ29sbGVjdG9yICAg\nICAgICAgICAgIFJlZ2lzdHJhdGlvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\nAQoCggEBAL9iVfrU08lseWkIG/PoPdb0J8AQUg+hULrKovPzxjxVpYJ4Qu1TE9r2\nKxMbdK1D6/Gl+4uf4ubQnOVYs3khD9Bwk42lHY71HnLvxgDKCJ8F4QzFUsA3vfhy\n1YFCopVynAwEz5xGhIAkR67y9d/lQUIc5qojK1oWUSHMf7XPL/4SJUDwd6tbd/mo\nN4hqRClMJ5+AhhpbNWdkiMftua3TAiT6/jPQUEPETThsLhkeGI+u6P+nzc2F8MLw\nx7CGHqgRsk7/vbUxXr1hQHQ15reTOank+fJMpA0c0WVgBVvf/Cq7JTSAqZuFbog1\njJ46VBF+3bhJRIudg4pnkID3IYTR+nkCAwEAAaNTMFEwHQYDVR0OBBYEFIfa8BrM\nIfwDOm6+DPRvKaH2dxQLMB8GA1UdIwQYMBaAFIfa8BrMIfwDOm6+DPRvKaH2dxQL\nMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBACNLmrZeXFWt687V\n3Qn/tYfIrra2dGGyz2y2YnIXWzGB+5iHJE+YYKH8D0rA3AexqU1ks2gk0bWcL+Kx\ny7ZAvth+fAbzxCeFHUqXhOeaChr0+MqY3zIlQLQVuBT02VpyGHl4h/k1NnoZkxta\nvIt/UAeEZI4uCR9Xy1mqQz1w9Vcsb3+Bmf+gjjYcXN/u3d1cgqe0AIF9HsOHsPYW\n1yJ0z3e8AfpuTv48j8p+i6YnKknIzJNM41pmQMaR2FatkmuRvY7OceGjStj7LVQr\neMfuheBlmjZWBlA9plQkcub+0Uwp3LEmAa0r4ad1wIseiTmTg6Z25IiTNM8Fz84Q\nLU4r/YA=\n-----END CERTIFICATE-----\n",
+            "verification_url": ["kaspar.dev.tivi.global:8080"],
+            "verification_sni": "kaspar.dev.tivi.global",
+            "help_url": "https://eh.valimised.ee/apps/help/index.html",
+            "close_timeout": 30000,
+            "close_interval": 1000,
+            "con_timeout_1": 3000,
+            "con_timeout_2": 15000
+        },
+        "elections": {
+            "TESTQUESTION": "Keda valite kandidaatide nimekirjast?"
+        },
+        "colors": {
+            "btn_background": "#F0F0F0",
+            "btn_foreground": "#727272",
+            "btn_verify_background_center": "#1AABE1",
+            "btn_verify_background_end": "#00A1DC",
+            "btn_verify_background_start": "#30B4E5",
+            "btn_verify_foreground": "#FFFFFF",
+            "error_window": "#FF0000",
+            "error_window_foreground": "#FFFFFF",
+            "error_window_shadow": "#770000",
+            "frame_background": "#AA444444",
+            "lbl_background": "#33B5E5",
+            "lbl_close_timeout_background_center": "#F9D303",
+            "lbl_close_timeout_background_end": "#F7C804",
+            "lbl_close_timeout_background_start": "#FEEC00",
+            "lbl_close_timeout_foreground": "#454444",
+            "lbl_close_timeout_shadow": "#C6A002",
+            "lbl_foreground": "#FFFFFF",
+            "lbl_inner_container_background": "#FFFFFF",
+            "lbl_inner_container_foreground": "#878686",
+            "lbl_outer_container_background": "#EAEAEA",
+            "lbl_outer_container_foreground": "#878686",
+            "lbl_outer_inner_container_divider": "#E9E9E9",
+            "lbl_shadow": "#008EC2",
+            "loading_window_background": "#33B5E5",
+            "loading_window_foreground": "#FFFFFF",
+            "main_window": "#33B5E5",
+            "main_window_foreground": "#FFFFFF",
+            "main_window_shadow": "#005777"
+        },
+        "errors": {
+            "bad_device_message": "Selle seadmega pole võimalik häält kontrollida",
+            "bad_server_response_message": "Tehniline viga palun teavitage valimiste läbiviijat",
+            "bad_verification_message": "Valiku tuvastamine krüptogrammist ebaõnnestus",
+            "bad_version_message": "See rakendus on aegunud",
+            "camera_permission_required_message": "Rakenduse kasutamiseks peab olema kaamera kasutamine lubatud",
+            "close_qrcode_message": "QR koodi ei õnnestunud tuvastada",
+            "no_network_message": "Veenduge et nutiseadme andmeside on võimaldatud",
+            "problem_qrcode_message": "QR koodi ei õnnestunud tuvastada"
+        },
+        "texts": {
+            "btn_close": "Sulge",
+            "btn_more": "AbiInfo",
+            "btn_next": "Edasi",
+            "btn_packet_data": "Andmeside",
+            "btn_verify": "Kuva minu valik",
+            "btn_wifi": "Wifi",
+            "lbl_choice": "Tuvastatud valik",
+            "lbl_close_timeout": "Rakendus suletakse XX sekundi pärast!",
+            "lbl_no_choice": "Valikut ei tehtud",
+            "lbl_vote": "Hääle kontrollimine",
+            "lbl_vote_signer": "Hääle allkirjastaja: ",
+            "lbl_vote_txt": "Teie QR-koodile vastav hääl on talletatud valimiste serveris",
+            "loading": "Laen...",
+            "notification_message": "Kontrollimine lõpetatud",
+            "notification_title": "Valimisteenistus",
+            "welcome_message": "Hääle kontollimiseks suunake nutiseadme kaamera arvuti ekraanil kuvatavale QR-koodile"
+        },
+        "versions": {
+            "android_version_code": 28,
+            "ios_bundle_version": "2.1.1"
+        }
+    }
+}

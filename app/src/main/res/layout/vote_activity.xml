@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -9,12 +11,13 @@
         android:id="@+id/vote_label"
         android:layout_width="fill_parent"
         android:layout_height="48dp"
+        android:accessibilityHeading="true"
         android:background="@color/light_blue"
         android:gravity="center_vertical|center_horizontal"
-        android:text=""
         android:textColor="#ffffff"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Hääle kontrollimine"/>
 
     <View
         android:id="@+id/vote_label_shadow"
@@ -37,10 +40,10 @@
             android:gravity="center_vertical|center_horizontal"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text=""
             android:textColor="#8D8D8D"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Teie QR-koodile vastav hääl on talletatud valimiste serveris"/>
 
     <TextView
         android:id="@+id/vote_signer_label"
@@ -50,10 +53,10 @@
         android:gravity="center_vertical|center_horizontal"
         android:layout_margin="8dp"
         android:padding="8dp"
-        android:text=""
         android:textColor="#8D8D8D"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="E-hääle allkirjastaja: O'CONNEŽ-ŠUSLIK, MARY ÄNN, 11412090004"/>
 	</LinearLayout>
 
     <LinearLayout
@@ -71,11 +74,13 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_btn"
+            android:backgroundTint="#1AABE1"
             android:padding="16dp"
-            android:text=""
             android:textColor="@android:color/white"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            tools:text="Kuva minu valik" />
     </LinearLayout>
 
 </LinearLayout>

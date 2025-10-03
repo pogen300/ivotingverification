@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/candidate_list_item_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -9,19 +10,20 @@
     android:layout_marginTop="16dp"
     android:background="@drawable/rounded_lbl"
     android:orientation="vertical"
-    android:paddingTop="10dp" >
+    android:paddingTop="10dp">
 
     <TextView
         android:id="@+id/election_title_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
         android:background="#EAEAEA"
         android:gravity="center_vertical|center_horizontal"
         android:padding="8dp"
-        android:text=""
         android:textColor="#878686"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Keda valite?"/>
 
     <View
         android:id="@+id/election_title_label_shadow"
@@ -55,10 +57,10 @@
             android:layout_marginTop="16dp"
             android:background="@android:color/white"
             android:gravity="center"
-            android:text=""
             android:textColor="#707070"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Nimi Nimeste"/>
 
         <TextView
             android:id="@+id/candidate_party_text"
@@ -70,10 +72,10 @@
             android:background="@android:color/white"
             android:paddingBottom="8dp"
             android:gravity="center"
-            android:text=""
             android:textColor="#8D8D8D"
             android:textSize="18sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            tools:text="Üksikkandidaadid"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -22,7 +22,7 @@ distributed via Google Play Store.
 
 The app is published here:
 https://play.google.com/store/apps/details?id=ee.ivxv.ivotingverification&hl=en.
-Current APK version is 38 (git tag EP2024-APK-38) used during EP2024 election.
+Current APK version is 41 (git tag KOV2025-APK-41) used during KOV2025 election.
 
 Steps to building the project and verifying the codebase matches the published
 APKs.

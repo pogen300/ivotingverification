@@ -9,14 +9,25 @@ public class Candidate {
     public final String party;
     public final String name;
 
-    public Candidate(String packed) {
-        String[] split = packed.split(Character.toString((char) 0x1F), 3);
-        if (split.length != 3) {
-            throw new IllegalArgumentException("Bad candidate format: " + packed);
+    public Candidate(String number) {
+        String code = "";
+        String name = "";
+        String party = C.noChoice;
+
+        for (Candidate c : C.candidateList) {
+            if (c.number.equals(number)) {
+                code = c.number;
+                name = c.name;
+                party = c.party;
+            }
         }
-        this.number = split[0];
-        this.party = split[1];
-        this.name = split[2];
+
+        if (code.isEmpty())
+            throw new IllegalArgumentException("Bad candidate format: " + number);
+
+        this.number = code;
+        this.name = name;
+        this.party = party;
     }
 
     public Candidate(String number, String party, String name) {

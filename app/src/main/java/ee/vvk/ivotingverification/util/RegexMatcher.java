@@ -32,12 +32,8 @@ public class RegexMatcher {
 
 		// Random seed and vote ID are base64 encoded with maximum
 		// encoded length 24 for the vote ID (decoded length 16).
-		if (!isBase64(splitQr[1]) || !isBase64(splitQr[2], 24)) {
-			return false;
-		}
-
-		return true;
-	}
+        return isBase64(splitQr[1]) && isBase64(splitQr[2], 24);
+    }
 
 	private static boolean isBase64(String s) {
 		return s.matches(BASE_64_REGEX);

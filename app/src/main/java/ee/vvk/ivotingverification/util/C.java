@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ee.vvk.ivotingverification.model.Candidate;
+
 /**
  * Configurations from server.
  * 
@@ -51,6 +53,8 @@ public class C {
 
 	public static String errorWindowForeground = "#FFFFFF";
 
+	public static String errorWindowCloseButtonFocused = "#B60010";
+
 	public static String mainWindow = "#33B5E5";
 
 	public static String mainWindowShadow = "#005777";
@@ -63,13 +67,11 @@ public class C {
 
 	public static String btnOk = "Ok";
 
-	public static String btnPacketData = "Andmeside";
-
-	public static String btnWifi = "Wifi";
-
 	public static String btnUpdate = "Värskenda";
 
 	public static String btnVerify = "Kontrolli";
+
+	public static String btnClose = "Sulge";
 
 	public static String noChoice = "Valikut ei tehtud";
 
@@ -81,7 +83,11 @@ public class C {
 
 	public static String btnVerifyBackgroundEnd = "#00A1DC";
 
+	public static String btnVerifyBackgroundFocused = "#1693C0";
+
 	public static String btnBackground = "#F0F0F0";
+
+	public static String btnBackgroundFocused = "#CFCFCF";
 
 	public static String btnForeground = "#727272";
 
@@ -94,6 +100,8 @@ public class C {
 	public static String lblChoice = "Tuvastatud valik";
 
 	public static String lblCloseTimeout = "Rakendus sulgub XX sekundi pärast!";
+
+	public static String qrViewOpened = "Alustage QR-koodi skaneerimist";
 
 	public static String lblBackground = "#33B5E5";
 
@@ -121,6 +129,8 @@ public class C {
 
 	public static String lblCloseTimeoutShadow = "#C6A002";
 
+	public static String btnCloseViewFocused = "#1995B4";
+
 	public static int closeTimeout = 30000;
 
 	public static int closeInterval = 1000;
@@ -131,27 +141,37 @@ public class C {
 
 	public static String publicKey = "";
 
-	public static String noNetworkMessage = "Veenduge, et nutiseadme andmeside on võimaldatud";
+	public static String noNetworkMessage = "Palun veenduge, et nutiseadme internetiühendus on aktiivne";
 
 	public static String getConfigMessage = "Valimiste seadistuse laadimine ebaõnnestus";
 
 	public static String badConfigMessage = "Valimiste seadistuse viga";
 
-	public static String badVersionMessage = "Rakendusest on olemas uuem versioon";
+	public static String badVerificationMessage = "Valiku tuvastamine ebaõnnestus";
 
-	public static String problemQrCodeMessage = "QR koodi ei õnnestunud tuvastada";
+	public static String badVersionMessage = "Rakenduse versioon ei ole ajakohane, palun uuendage oma rakendust";
 
-	public static String sendServerRequestMessage = "Valimiste süsteemiga ühendamine ebaõnnestus";
+	public static String problemQrCodeMessage = "QR-koodi ei õnnestunud tuvastada";
 
-	public static String badServerResponseMessage = "Tehniline viga, palun teavitage valimiste läbiviijat";
+	public static String sendServerRequestMessage = "Valimiste süsteemiga ühendamine ebaõnnestus, kontrollige internetiühendust või teavitage valimiste korraldajat abi@valimised.ee";
 
-	public static String badDeviceMessage = "Selle seadmega ei ole võimalik verifitseerimist läbi viia";
+	public static String badServerResponseMessage = "Tehniline viga, palun teavitage valimiste korraldajat abi@valimised.ee";
+
+	public static String badDeviceMessage = "Seadmel puudub kaamera, verifitseerimist ei ole võimalik läbi viia";
 
 	public static String cameraPermissionRequired = "Rakenduse kasutamiseks peab olema kaamera kasutamine lubatud";
+
+	public static String errorRetryButton = "Proovi uuesti";
+
+	public static String errorTitleDefault = "Viga";
+
+	public static String errorTitleNetwork = "Internetiühendus puudub";
+
+	public static String errorTitleBadVersion = "Rakenduse versiooni viga";
 
 	public static List<String> languages = new ArrayList<>();
 
 	public static HashMap<String, String> elections = new HashMap<>();
 
-	public static ArrayList<String> candidateList = new ArrayList<>();
+	public static List<Candidate> candidateList = new ArrayList<>();
 }

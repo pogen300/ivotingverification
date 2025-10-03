@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical|center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/spinner_img"
@@ -17,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text=""
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Laadin..."/>
 
 </LinearLayout>

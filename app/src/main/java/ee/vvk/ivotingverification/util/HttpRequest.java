@@ -67,7 +67,7 @@ public class HttpRequest {
 	/**
 	 * TLSv12SocketFactory wraps a "TLSv1.3" SSLContext's SSLSocketFactory to only enable TLS v1.3.
 	 */
-	private class TLSv13SocketFactory extends SSLSocketFactory {
+	private static class TLSv13SocketFactory extends SSLSocketFactory {
 		private final SSLSocketFactory factory;
 
 		TLSv13SocketFactory(KeyManager[] km, TrustManager[] tm, SecureRandom random)

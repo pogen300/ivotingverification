@@ -17,40 +17,56 @@ import java.security.Signature;
 import java.util.Arrays;
 
 public class Pkix {
-    public static long verifyResponse(byte[] response, PublicKey collectorPub,
-                                      SignerInformationVerifier sigVerifier, byte[] msg) throws Exception {
-        TimeStampToken token = new TimeStampToken(new CMSSignedData(response));
-        TimeStampTokenInfo tokenInfo = token.getTimeStampInfo();
 
-        // Msg digest and msg imprint in Pkix response have to match
-        MessageDigest digest = MessageDigest.getInstance(tokenInfo.getMessageImprintAlgOID().toString(), "SC");
-        if (!Arrays.equals(digest.digest(msg), tokenInfo.getMessageImprintDigest())) {
-            throw new Exception("MessageImprints of input data and TSP response do not match");
-        }
+    private final TimeStampToken token;
 
-        // Nonce has to have proper structure
-        Nonce nonce;
-        try {
-            nonce = new Nonce(tokenInfo.getNonce().toByteArray());
-        } catch (Exception e) {
-            throw new Exception("Invalid nonce asn1 structure in PKIX response");
-        }
+    public Pkix(byte[] response) throws Exception {
+        this.token = new TimeStampToken(new CMSSignedData(response));
+    }
 
-        // Collector's signature on the msg has to be verified with trusted key
-        Signature signature = Signature.getInstance(nonce.oid, "SC");
-        signature.initVerify(collectorPub);
-        signature.update(msg);
-        if (!signature.verify(nonce.sig)) {
-            throw new Exception("Verification of collector's signature in nonce failed");
-        }
-
+    public void validateToken(SignerInformationVerifier sigVerifier) throws Exception {
         // Pkix responder signature on the response has to verified with trusted certificate
         try {
             token.validate(sigVerifier);
         } catch (TSPValidationException e) {
             throw new Exception("TSP response invalid: " + e.getMessage(), e);
         }
-        return tokenInfo.getGenTime().getTime();
+    }
+
+    public void verifySignature(PublicKey collectorPub, byte[] signatureValueCanon) throws Exception {
+        TimeStampTokenInfo tokenInfo = token.getTimeStampInfo();
+        byte[] signatureValueCanonVerified = getVerifiedSignatureValueCanon(signatureValueCanon, tokenInfo);
+        Nonce nonce = getStructuredNonce(tokenInfo.getNonce().toByteArray());
+
+        // Collector's signature on the msg has to be verified with trusted key
+        Signature signature = Signature.getInstance(nonce.oid, "SC");
+        signature.initVerify(collectorPub);
+        signature.update(signatureValueCanonVerified);
+        if (!signature.verify(nonce.sig)) {
+            throw new Exception("Verification of collector's signature in nonce failed");
+        }
+    }
+
+    private byte[] getVerifiedSignatureValueCanon(byte[] signatureValueCanon, TimeStampTokenInfo tokenInfo) throws Exception {
+        // Msg digest and msg imprint in Pkix response have to match
+        MessageDigest digest = MessageDigest.getInstance(tokenInfo.getMessageImprintAlgOID().toString(), "SC");
+        if (!Arrays.equals(digest.digest(signatureValueCanon), tokenInfo.getMessageImprintDigest())) {
+            throw new Exception("MessageImprints of input data and TSP response do not match");
+        }
+        return signatureValueCanon;
+    }
+
+    private Nonce getStructuredNonce(byte[] nonceBytes) throws Exception {
+        // Nonce has to have proper structure
+        try {
+            return new Nonce(nonceBytes);
+        } catch (Exception e) {
+            throw new Exception("Invalid nonce asn1 structure in PKIX response");
+        }
+    }
+
+    public long getGenTime() {
+        return token.getTimeStampInfo().getGenTime().getTime();
     }
 
     private static class Nonce {

@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,12 +33,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import ee.vvk.ivotingverification.ErrorActivity;
 import ee.vvk.ivotingverification.NetworkErrorActivity;
 import ee.vvk.ivotingverification.VersionErrorActivity;
-import ee.vvk.ivotingverification.R;
 import ee.vvk.ivotingverification.dialog.LoadingSpinner;
 
 /**
@@ -47,6 +50,8 @@ public class Util {
 
 	public final static String VOTE_CONTAINER_INFO = "ee.vvk.ivotingverification.VOTE_CONTAINER_INFO";
 	public final static String ERROR_MESSAGE = "ee.vvk.ivotingverification.ERROR_MESSAGE";
+
+	public final static String ERROR_TITLE = "ee.vvk.ivotingverification.ERROR_TITLE";
 	public final static String QR_CODE_CONTENTS = "ee.vvk.ivotingverification.QR_CODE_CONTENTS";
 	public final static String EXIT = "ee.vvk.ivotingverification.EXIT";
 	public final static String RESULT = "ee.vvk.ivotingverification.RESULT";
@@ -57,11 +62,6 @@ public class Util {
 	public final static long VIBRATE_DURATION = 350L;
 
 	public static boolean DEBUGGABLE = false;
-
-	// Models where camera can't be rotated to portrait
-	public static Set<String> SpecialModels = new HashSet<>(Arrays.asList("Samsung GT-S6102", "Samsung GT-S5360",
-			"Samsung GT-S5660", "Samsung YP-G1", "Samsung YP-G70"));
-
 
 	public static void logException(String tag, Exception exc) {
 		if (DEBUGGABLE) {
@@ -107,11 +107,9 @@ public class Util {
 
 		KeyStore localTrustStore = KeyStore.getInstance("BKS");
 
-		try {
-			localTrustStore.load(in, C.trustStorePass.toCharArray());
-		} finally {
-			in.close();
-		}
+        try (in) {
+            localTrustStore.load(in, C.trustStorePass.toCharArray());
+        }
 		return localTrustStore;
 	}
 
@@ -143,18 +141,16 @@ public class Util {
 
 	public static String readLines(InputStream in, String encoding)
 			throws IOException {
-		try {
-			StringBuilder buff = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					in, encoding != null ? encoding : "UTF-8"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				buff.append(line).append("\n");
-			}
-			return buff.toString();
-		} finally {
-			in.close();
-		}
+        try (in) {
+            StringBuilder buff = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    in, encoding != null ? encoding : "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buff.append(line).append("\n");
+            }
+            return buff.toString();
+        }
 	}
 
 	public static LoadingSpinner startSpinner(Activity currentActivity,
@@ -176,26 +172,29 @@ public class Util {
 
 	public static void startErrorIntent(Activity currentActivity, String error_msg) {
 		Intent error_intent = new Intent(currentActivity, ErrorActivity.class);
+		error_intent.putExtra(Util.ERROR_TITLE, C.errorTitleDefault);
 		error_intent.putExtra(Util.ERROR_MESSAGE, error_msg);
 		currentActivity.startActivity(error_intent);
 		currentActivity.finish();
-		Util.logError("Error intent", currentActivity.getClass().getSimpleName());
+		Util.logError(currentActivity.getClass().getSimpleName(), error_msg);
 	}
 
-	public static void startNetworkErrorIntent(Activity currentActivity, String error_msg) {
+	public static void startNetworkErrorIntent(Activity currentActivity) {
 		Intent error_intent = new Intent(currentActivity, NetworkErrorActivity.class);
-		error_intent.putExtra(Util.ERROR_MESSAGE, error_msg);
+		error_intent.putExtra(Util.ERROR_TITLE, C.errorTitleNetwork);
+		error_intent.putExtra(Util.ERROR_MESSAGE, C.noNetworkMessage);
 		currentActivity.startActivity(error_intent);
 		currentActivity.finish();
-		Util.logError("Network error intent", currentActivity.getClass().getSimpleName());
+		Util.logError(currentActivity.getClass().getSimpleName(), C.noNetworkMessage);
 	}
 
-	public static void startVersionErrorIntent(Activity currentActivity, String error_msg) {
+	public static void startVersionErrorIntent(Activity currentActivity) {
 		Intent error_intent = new Intent(currentActivity, VersionErrorActivity.class);
-		error_intent.putExtra(Util.ERROR_MESSAGE, error_msg);
+		error_intent.putExtra(Util.ERROR_TITLE, C.errorTitleBadVersion);
+		error_intent.putExtra(Util.ERROR_MESSAGE, C.badVersionMessage);
 		currentActivity.startActivity(error_intent);
 		currentActivity.finish();
-		Util.logError("Version error intent", currentActivity.getClass().getSimpleName());
+		Util.logError(currentActivity.getClass().getSimpleName(), C.badVersionMessage);
 	}
 
 	public static int generateHexColorValue(String color) {
@@ -227,7 +226,7 @@ public class Util {
 	}
 
 	public static String capitalize(String s) {
-		if (s == null || s.length() == 0) {
+		if (s == null || s.isEmpty()) {
 			return "";
 		}
 		char first = s.charAt(0);
@@ -283,6 +282,17 @@ public class Util {
 
 	public static void verifyCertIssuerSig(X509Certificate cert, X509Certificate issuer) throws Exception {
 		cert.verify(issuer.getPublicKey(), "SC");
+	}
+
+	public static boolean isNetworkConnected(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager)
+				context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectivityManager == null) return false;
+		Network network = connectivityManager.getActiveNetwork();
+		if (network == null) return false;
+		NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+		return networkCapabilities != null &&
+				networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
 	}
 
 }

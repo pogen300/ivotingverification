@@ -2,21 +2,23 @@ package ee.vvk.ivotingverification.tasks;
 
 import java.util.ArrayList;
 
+import ee.vvk.ivotingverification.common.crypto.DecrypterWithRandomness;
 import ee.vvk.ivotingverification.model.Candidate;
 import ee.vvk.ivotingverification.model.Vote;
+import ee.vvk.ivotingverification.util.C;
 import ee.vvk.ivotingverification.util.CheckBallot;
-import ee.vvk.ivotingverification.util.ElGamalPub;
+import ee.vvk.ivotingverification.util.Util;
 
+public class DecryptionTask extends BaseTask<DecryptionTaskResult> {
 
-public class DecryptionTask extends BaseTask<ArrayList<Candidate>> {
-
-    private final AsyncTaskActivity<ArrayList<Candidate>> activity;
+    private static final String TAG = DecryptionTask.class.getSimpleName();
+    private final AsyncTaskActivity<DecryptionTaskResult> activity;
 
     private final ArrayList<Vote> voteList;
-    private final ElGamalPub pub;
+    private final DecrypterWithRandomness pub;
     private final byte[] rnd;
 
-    public DecryptionTask(AsyncTaskActivity<ArrayList<Candidate>> activity, ArrayList<Vote> voteList, ElGamalPub pub, byte[] rnd) {
+    public DecryptionTask(AsyncTaskActivity<DecryptionTaskResult> activity, ArrayList<Vote> voteList, DecrypterWithRandomness pub, byte[] rnd) {
         this.activity = activity;
         this.voteList = voteList;
         this.pub = pub;
@@ -29,28 +31,34 @@ public class DecryptionTask extends BaseTask<ArrayList<Candidate>> {
     }
 
     @Override
-    public ArrayList<Candidate> call() throws Exception {
+    public DecryptionTaskResult call() {
 
         ArrayList<Candidate> result = new ArrayList<>();
         for (Vote vote : voteList) {
-            String decChoice = pub.getDecryptedChoice(vote.vote, rnd);
-            if (decChoice.equals("")) {
-                result.add(Candidate.NO_CHOICE);
-            } else {
-                if (CheckBallot.wrongCandidateNumber(decChoice)
-                        || CheckBallot.wrongCandidateName(decChoice)
-                        || CheckBallot.decryptedChoiceNotInCandidateList(decChoice)) {
-                    return null;
+            try {
+                String decChoice = pub.decryptWithRandomness(vote.vote, rnd);
+                if (decChoice.isEmpty()) {
+                    result.add(Candidate.NO_CHOICE);
+                } else {
+                    if (CheckBallot.decryptedChoiceNotInCandidateList(decChoice)) {
+                        return new DecryptionTaskResult(null, C.badVerificationMessage);
+                    }
+                    result.add(new Candidate(decChoice));
                 }
-                result.add(new Candidate(decChoice));
+            } catch (NullPointerException nullPointerException) {
+                Util.logException(TAG, nullPointerException);
+                return new DecryptionTaskResult(null, C.badVerificationMessage);
+            } catch (Exception ex) {
+                Util.logException(TAG, ex);
+                return new DecryptionTaskResult(null, C.badServerResponseMessage);
             }
         }
-        return result;
+        return new DecryptionTaskResult(result, null);
     }
 
     @Override
-    public void setDataAfterLoading(ArrayList<Candidate> candidates) {
-        activity.onPostExecute(candidates);
+    public void setDataAfterLoading(DecryptionTaskResult result) {
+        activity.onPostExecute(result);
     }
 }
 

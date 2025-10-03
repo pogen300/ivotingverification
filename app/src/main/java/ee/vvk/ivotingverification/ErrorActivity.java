@@ -14,23 +14,23 @@ public class ErrorActivity extends BaseErrorActivity {
 
     private static final String TAG = ErrorActivity.class.getSimpleName();
 
-    protected void initErrorWindow(String errorMessage) {
-        super.initErrorWindow(errorMessage);
+    protected void initErrorWindow(String errorTitle, String errorMessage) {
+        super.initErrorWindow(errorTitle, errorMessage);
 
-        Button buttonWifi = findViewById(R.id.btn_wifi);
-        Button buttonOk = findViewById(R.id.btn_ok);
+        Button buttonLeft = findViewById(R.id.btn_left);
+        Button buttonRight = findViewById(R.id.btn_right);
 
-        buttonWifi.setText(C.btnMore);
-        buttonWifi.setVisibility(View.VISIBLE);
-        buttonWifi.setOnClickListener(this::clickMoreButton);
+        buttonLeft.setText(C.btnMore);
+        buttonLeft.setVisibility(View.VISIBLE);
+        buttonLeft.setOnClickListener(this::clickMoreButton);
 
-        buttonOk.setText(C.btnOk);
-        buttonOk.setVisibility(View.VISIBLE);
-        buttonOk.setOnClickListener(v -> finish());
+        buttonRight.setText(C.btnOk);
+        buttonRight.setVisibility(View.VISIBLE);
+        buttonRight.setOnClickListener(v -> finish());
 
     }
 
-    public void clickMoreButton(View view) {
+    private void clickMoreButton(View view) {
         Intent showHelp = new Intent(Intent.ACTION_VIEW, Uri.parse(C.helpURL));
         try {
             startActivity(showHelp);

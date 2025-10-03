@@ -1,11 +1,8 @@
 package ee.vvk.ivotingverification;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,16 +11,17 @@ import android.widget.LinearLayout;
 import ee.vvk.ivotingverification.dialog.LoadingSpinner;
 import ee.vvk.ivotingverification.model.QRCodeContents;
 import ee.vvk.ivotingverification.model.VerificationProfile;
-import ee.vvk.ivotingverification.model.VoteContainerInfo;
 import ee.vvk.ivotingverification.tasks.AsyncTaskActivity;
 import ee.vvk.ivotingverification.tasks.GetVoteTask;
 import ee.vvk.ivotingverification.tasks.TaskRunner;
+import ee.vvk.ivotingverification.tasks.VoteTaskResult;
 import ee.vvk.ivotingverification.util.C;
 import ee.vvk.ivotingverification.util.EstEidLoader;
 import ee.vvk.ivotingverification.util.Util;
 
-public class VoteDownloadActivity extends Activity implements AsyncTaskActivity<VoteContainerInfo> {
+public class VoteDownloadActivity extends Activity implements AsyncTaskActivity<VoteTaskResult> {
 
+    private static final String TAG = VoteDownloadActivity.class.getSimpleName();
     private LoadingSpinner mLoadingSpinner;
     private QRCodeContents qrCodeContents;
     private VerificationProfile verificationProfile;
@@ -46,7 +44,9 @@ public class VoteDownloadActivity extends Activity implements AsyncTaskActivity<
                     C.publicKey, EstEidLoader.getEsteidCerts(VoteDownloadActivity.this),
                     C.ocspServiceCertArray, C.tspregServiceCert, C.tspregClientCert);
         } catch (Exception e) {
+            Util.logException(TAG, e);
             Util.startErrorIntent(VoteDownloadActivity.this, C.badConfigMessage);
+            return;
         }
 
         LinearLayout frameBg = findViewById(R.id.vote_download_frame_bg);
@@ -56,13 +56,11 @@ public class VoteDownloadActivity extends Activity implements AsyncTaskActivity<
         GradientDrawable bgShape = (GradientDrawable) linearLayout.getBackground();
         bgShape.setColor(Util.generateHexColorValue(C.loadingWindow));
 
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (Util.isNetworkConnected(this)) {
             TaskRunner runner = new TaskRunner();
             runner.executeAsync(new GetVoteTask(this, qrCodeContents, verificationProfile));
         } else {
-            Util.startNetworkErrorIntent(VoteDownloadActivity.this, C.noNetworkMessage);
+            Util.startNetworkErrorIntent(VoteDownloadActivity.this);
         }
     }
 
@@ -78,16 +76,16 @@ public class VoteDownloadActivity extends Activity implements AsyncTaskActivity<
     }
 
     @Override
-    public void onPostExecute(VoteContainerInfo result) {
+    public void onPostExecute(VoteTaskResult result) {
         Util.stopSpinner(mLoadingSpinner);
-        if (result != null) {
-            Intent next_intent = new Intent(VoteDownloadActivity.this, VoteReceivedActivity.class);
-            next_intent.putExtra(Util.VOTE_CONTAINER_INFO, result);
-            next_intent.putExtra(Util.QR_CODE_CONTENTS, qrCodeContents);
-            startActivity(next_intent);
-            finish();
-        } else {
-            Util.startErrorIntent(VoteDownloadActivity.this, C.badServerResponseMessage);
+        if (result.isFailure()) {
+            Util.startErrorIntent(VoteDownloadActivity.this, result.errorMessage);
+            return;
         }
+        Intent next_intent = new Intent(VoteDownloadActivity.this, VoteReceivedActivity.class);
+        next_intent.putExtra(Util.VOTE_CONTAINER_INFO, result.value);
+        next_intent.putExtra(Util.QR_CODE_CONTENTS, qrCodeContents);
+        startActivity(next_intent);
+        finish();
     }
 }

@@ -1,54 +1,33 @@
 package ee.vvk.ivotingverification;
 
 import android.content.Intent;
-import android.provider.Settings;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import ee.vvk.ivotingverification.util.C;
 
 public class NetworkErrorActivity extends BaseErrorActivity {
 
-    private boolean connectionButtonIsClicked = false;
+    protected void initErrorWindow(String errorTitle, String errorMessage) {
+        super.initErrorWindow(errorTitle, errorMessage);
 
-    @Override
-    public void onResume() {
-        super.onResume();
+        Button buttonLeft = findViewById(R.id.btn_left);
 
-        if (connectionButtonIsClicked) {
-            finish();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-        }
-    }
+        buttonLeft.setText(C.errorRetryButton);
+        buttonLeft.setVisibility(View.VISIBLE);
+        buttonLeft.setOnClickListener(this::clickRetryButton);
 
-    protected void initErrorWindow(String errorMessage) {
-        super.initErrorWindow(errorMessage);
-
-        Button buttonWifi = findViewById(R.id.btn_wifi);
-        Button buttonOk = findViewById(R.id.btn_ok);
-
-        buttonWifi.setText(C.btnWifi);
-        buttonWifi.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        buttonWifi.setVisibility(View.VISIBLE);
-        buttonWifi.setOnClickListener(this::clickWifiButton);
-
-        buttonOk.setText(C.btnPacketData);
-        buttonOk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        buttonOk.setVisibility(View.VISIBLE);
-        buttonOk.setOnClickListener(this::clickPacketDataButton);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) buttonLeft.getLayoutParams();
+        params.weight = 2;
+        buttonLeft.setLayoutParams(params);
 
     }
 
-    public void clickPacketDataButton(View view) {
-        connectionButtonIsClicked = true;
-        NetworkErrorActivity.this.startActivity(new Intent(Settings.ACTION_SETTINGS));
-    }
-
-    public void clickWifiButton(View view) {
-        connectionButtonIsClicked = true;
-        NetworkErrorActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+    public void clickRetryButton(View view) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

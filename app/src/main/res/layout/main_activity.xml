@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/frame_bg"
     android:orientation="vertical">
 
@@ -23,103 +24,100 @@
         android:id="@+id/layout_header"
         layout="@layout/istest" />
 
-    <ImageView
-        android:id="@+id/frame_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:contentDescription=""
-        android:src="@drawable/frame_img"
-        tools:ignore="ContentDescription" />
+    <RelativeLayout
+        android:id="@+id/foreground_ui_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/window_shadow"
-        android:layout_width="244dp"
-        android:layout_height="254dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:paddingTop="10dp"
-        android:visibility="invisible">
+        <ImageView
+            android:id="@+id/frame_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:contentDescription=""
+            android:src="@drawable/frame_img"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
-            android:id="@+id/target_window_shadow"
+            android:id="@+id/window_shadow"
+            android:layout_width="244dp"
+            android:layout_height="254dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/target_window_shadow"
+                android:layout_width="244dp"
+                android:layout_height="244dp"
+                android:background="@drawable/target_shadow"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/target_window"
             android:layout_width="244dp"
             android:layout_height="244dp"
-            android:background="@drawable/target_shadow"
-            android:orientation="horizontal" />
-    </LinearLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/target"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:weightSum="8"
+            android:backgroundTint="#33B5E5">
 
-    <LinearLayout
-        android:id="@+id/target_window"
-        android:layout_width="244dp"
-        android:layout_height="244dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/target"
-        android:orientation="vertical"
-        android:weightSum="5">
+            <ScrollView
+                android:id="@+id/scrollview_main"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="6">
 
-        <TextView
-            android:id="@+id/text_message"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="3.5"
-            android:gravity="center_horizontal"
-            android:text=""
-            android:textSize="18sp"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/text_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Hääle kontrollimiseks suunake nutiseadme kaamera arvuti ekraanil kuvatavale QR-koodile"/>
+            </ScrollView>
 
-        <LinearLayout
-            android:layout_width="244dp"
-            android:layout_height="0dp"
-            android:layout_weight="1.5"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <Button
-                android:id="@+id/btn_more"
-                android:layout_width="108dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_btn"
-                android:ellipsize="end"
-                android:filterTouchesWhenObscured="true"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:text=""
-                android:textColor="@android:color/darker_gray"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                <Button
+                    style="@style/BaseButton"
+                    android:id="@+id/btn_more"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:filterTouchesWhenObscured="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Abi"
+                    tools:ignore="NestedWeights" />
 
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="108dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_btn"
-                android:ellipsize="end"
-                android:filterTouchesWhenObscured="true"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:text=""
-                android:textColor="@android:color/darker_gray"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                <Button
+                    style="@style/BaseButton"
+                    android:id="@+id/btn_next"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:filterTouchesWhenObscured="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Edasi"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
+    </RelativeLayout>
 </RelativeLayout>

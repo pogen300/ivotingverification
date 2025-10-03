@@ -1,21 +1,20 @@
 package ee.vvk.ivotingverification;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,13 +30,16 @@ import ee.vvk.ivotingverification.dialog.LoadingSpinner;
 import ee.vvk.ivotingverification.qr.CameraManager;
 import ee.vvk.ivotingverification.qr.InactivityTimer;
 import ee.vvk.ivotingverification.tasks.AsyncTaskActivity;
+import ee.vvk.ivotingverification.tasks.ConfigTaskResult;
 import ee.vvk.ivotingverification.tasks.GetConfigTask;
 import ee.vvk.ivotingverification.tasks.TaskRunner;
 import ee.vvk.ivotingverification.util.C;
+import ee.vvk.ivotingverification.util.DeviceOrientationManager;
 import ee.vvk.ivotingverification.util.JSONParser;
 import ee.vvk.ivotingverification.util.Util;
+import ee.vvk.ivotingverification.util.accessibility.AccessibilityDelegate;
 
-public class MainActivity extends AppCompatActivity implements AsyncTaskActivity<String> {
+public class MainActivity extends AppCompatActivity implements AsyncTaskActivity<ConfigTaskResult> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private InactivityTimer inactivityTimer;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
     private Button buttonMore;
     private Button buttonNext;
     private PreviewView previewView;
+    private DeviceOrientationManager screenOrientationManager;
+    private AccessibilityDelegate accessibilityDelegate = new AccessibilityDelegate();
 
     public static boolean deleteDir(File dir) {
         if (dir == null) {
@@ -87,14 +91,11 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
         GradientDrawable bgShape = (GradientDrawable) linearLayout.getBackground();
         bgShape.setColor(Color.GRAY);
 
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (Util.isNetworkConnected(this)) {
             TaskRunner runner = new TaskRunner();
             runner.executeAsync(new GetConfigTask(this, C.configURL));
         } else {
-            Util.startNetworkErrorIntent(MainActivity.this, C.noNetworkMessage);
+            Util.startNetworkErrorIntent(MainActivity.this);
         }
 
         LinearLayout frameBg = findViewById(R.id.frame_bg);
@@ -102,39 +103,53 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
 
         buttonNext = findViewById(R.id.btn_next);
         buttonNext.setText(C.btnNext);
-        buttonNext.setTextColor(Util.generateHexColorValue(C.btnForeground));
-        GradientDrawable bgNextShape = (GradientDrawable) buttonNext.getBackground();
-        bgNextShape.setColor(Util.generateHexColorValue(C.btnBackground));
+        setButtonColors(buttonNext);
         buttonNext.setOnClickListener(this::clickNextButton);
 
         buttonMore = findViewById(R.id.btn_more);
         buttonMore.setText(C.btnMore);
-        buttonMore.setTextColor(Util.generateHexColorValue(C.btnForeground));
-        GradientDrawable bgMoreShape = (GradientDrawable) buttonMore.getBackground();
-        bgMoreShape.setColor(Util.generateHexColorValue(C.btnBackground));
+        setButtonColors(buttonMore);
         buttonMore.setOnClickListener(this::clickMoreButton);
+
+        screenOrientationManager = initScreenOrientationManager();
+        screenOrientationManager.registerDeviceRotationListener();
+        screenOrientationManager.registerAutoRotateObserver();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         inactivityTimer.onResume();
-        new CameraManager(this).cameraPreview(previewView);
+        new CameraManager(this)
+                .cameraPreview(previewView, false, null);
     }
 
     @Override
     public void onPause() {
         inactivityTimer.onPause();
         super.onPause();
-        new CameraManager(this).cameraPreview(previewView);
     }
 
-    public void clickNextButton(View view) {
+    private void setButtonColors(Button button) {
+        button.setTextColor(Util.generateHexColorValue(C.btnForeground));
+
+        GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
+        buttonShape.setColor(Util.generateHexColorValue(C.btnBackground));
+        button.setOnFocusChangeListener((view, isFocused) -> {
+            if (isFocused) {
+                buttonShape.setColor(Util.generateHexColorValue(C.btnBackgroundFocused));
+            } else {
+                buttonShape.setColor(Util.generateHexColorValue(C.btnBackground));
+            }
+        });
+    }
+
+    private void clickNextButton(View view) {
         Intent QRCodeDecoder = new Intent(this, QRScannerActivity.class);
         startActivity(QRCodeDecoder);
     }
 
-    public void clickMoreButton(View view) {
+    private void clickMoreButton(View view) {
         Intent showHelp = new Intent(Intent.ACTION_VIEW, Uri.parse(C.helpURL));
         try {
             startActivity(showHelp);
@@ -149,11 +164,29 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
         inactivityTimer.shutdown();
         super.onDestroy();
         Util.stopSpinner(mLoadingSpinner);
+        screenOrientationManager.unregisterDeviceRotationListener();
+        screenOrientationManager.unregisterAutoRotateObserver();
         try {
             deleteDir(getApplicationContext().getCacheDir());
         } catch (Exception e) {
             Util.logDebug(TAG, "Error while cleaning app cache: ", e);
         }
+    }
+
+    private DeviceOrientationManager initScreenOrientationManager() {
+        return new DeviceOrientationManager(this) {
+            @Override
+            public void rotateUI(int orientation) {
+                RelativeLayout foregroundUserInterface = findViewById(R.id.foreground_ui_main);
+                if (orientation == screenOrientationManager.PORTRAIT) {
+                    foregroundUserInterface.setRotation(0);
+                } else if (orientation == screenOrientationManager.LANDSCAPE_RIGHT) {
+                    foregroundUserInterface.setRotation(270);
+                } else if (orientation == screenOrientationManager.LANDSCAPE_LEFT) {
+                    foregroundUserInterface.setRotation(90);
+                }
+            }
+        };
     }
 
     private void initMainWindow() {
@@ -185,20 +218,23 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
 
         ImageView frameImage = findViewById(R.id.frame_image);
         frameImage.setVisibility(View.GONE);
+
+        ScrollView scrollView = findViewById(R.id.scrollview_main);
+        accessibilityDelegate.handleScrollViewFocus(this, scrollView, textView);
     }
 
     public void onPreExecute() {
         mLoadingSpinner = Util.startSpinner(this, true);
     }
 
-    public void onPostExecute(String result) {
+    public void onPostExecute(ConfigTaskResult result) {
         try {
-            if (result == null) {
-                Util.startErrorIntent(MainActivity.this, C.getConfigMessage);
+            if (result.isFailure()) {
+                Util.startErrorIntent(MainActivity.this, result.errorMessage);
                 return;
             }
             try {
-                JSONParser.parseConfig(result);
+                JSONParser.parseConfig(result.value);
             } catch (Exception e) {
                 Util.logException(TAG, e);
                 Util.startErrorIntent(MainActivity.this, C.badConfigMessage);
@@ -206,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskActivity
             }
 
             if (!isApplicationUpToDate(C.expectedVersion)) {
-                Util.startVersionErrorIntent(MainActivity.this, C.badVersionMessage);
+                Util.startVersionErrorIntent(MainActivity.this);
+                return;
             }
 
             Util.stopSpinner(mLoadingSpinner);

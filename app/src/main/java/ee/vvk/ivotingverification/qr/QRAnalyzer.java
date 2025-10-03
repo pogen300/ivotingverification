@@ -19,7 +19,6 @@ import com.google.mlkit.vision.common.InputImage;
 import ee.vvk.ivotingverification.QRScannerActivity;
 import ee.vvk.ivotingverification.exceptions.InvalidQrCodeException;
 import ee.vvk.ivotingverification.model.QRCodeContents;
-import ee.vvk.ivotingverification.util.C;
 import ee.vvk.ivotingverification.util.Util;
 
 public class QRAnalyzer extends AppCompatActivity implements ImageAnalysis.Analyzer {
@@ -27,7 +26,6 @@ public class QRAnalyzer extends AppCompatActivity implements ImageAnalysis.Analy
     private final BarcodeScannerOptions options =
             new BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build();
     private final BarcodeScanner barcodeScanner = BarcodeScanning.getClient(options);
-    private boolean detectQR = true;
     private final QRScannerActivity activity;
 
     public QRAnalyzer(QRScannerActivity activity) {
@@ -48,25 +46,25 @@ public class QRAnalyzer extends AppCompatActivity implements ImageAnalysis.Analy
             barcodeScanner.process(image)
                     .addOnSuccessListener(
                             barcodes -> {
-                                detectQR = !detectQR;
-                                if (detectQR) return;
                                 for (Barcode barcode : barcodes) {
-                                    String rawValue = barcode.getRawValue();
+                                    String rawValue = "";
+                                    if (barcode.getRawValue() != null) rawValue = barcode.getRawValue();
                                     try {
-                                        QRCodeContents qrCodeContents =
-                                                new QRCodeContents(rawValue);
                                         Vibrator vibrator = (Vibrator) this.activity
                                                 .getSystemService(Context.VIBRATOR_SERVICE);
                                         vibrator.vibrate(Util.VIBRATE_DURATION);
+                                        QRCodeContents qrCodeContents =
+                                                new QRCodeContents(rawValue);
                                         this.activity.qrCodePassed(qrCodeContents);
+                                        return;
                                     } catch (InvalidQrCodeException ex) {
-                                        ex.printStackTrace();
-                                        Util.startErrorIntent(this.activity,
-                                                C.problemQrCodeMessage);
+                                        Util.startErrorIntent(this.activity, ex.getMessage());
+                                        return;
                                     }
                                 }
+                                imageProxy.close();
                             }
-                    ).addOnCompleteListener(completed -> imageProxy.close());
+                    );
         }
     }
 }

@@ -6,7 +6,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+
+import ee.vvk.ivotingverification.model.Candidate;
 
 /**
  * JSON parser.
@@ -44,7 +47,7 @@ public class JSONParser {
 		if (input.startsWith(UTF8_BOM)) {
 			input = input.substring(1);
 		}
-		ArrayList<String> candidateList = new ArrayList<>();
+		List<Candidate> candidateList = new ArrayList<>();
 		JSONObject jsonObject = new JSONObject(input);
 		for (Iterator<String> it = jsonObject.keys(); it.hasNext();) {
 			String party = it.next();
@@ -55,11 +58,11 @@ public class JSONParser {
 		C.candidateList = candidateList;
 	}
 
-	private static void parseCandidates(JSONObject choices, String party, ArrayList<String> candidateList) {
+	private static void parseCandidates(JSONObject choices, String party, List<Candidate> candidateList) {
 		for (Iterator<String> it = choices.keys(); it.hasNext();) {
 			String number = it.next();
 			String name = choices.optString(number, "");
-			candidateList.add(number + (char) 0x1F + party + (char) 0x1F + name);
+			candidateList.add(new Candidate(number, party, name));
 		}
 	}
 
@@ -76,12 +79,12 @@ public class JSONParser {
 		C.btnNext = texts.optString("btn_next", C.btnNext);
 		C.btnMore = texts.optString("btn_more", C.btnMore);
 		C.btnOk = texts.optString("btn_ok", C.btnOk);
-		C.btnPacketData = texts.optString("btn_packet_data", C.btnPacketData);
-		C.btnWifi = texts.optString("btn_wifi", C.btnWifi);
 		C.btnUpdate = texts.optString("btn_update", C.btnUpdate);
 		C.btnVerify = texts.optString("btn_verify", C.btnVerify);
+		C.btnClose = texts.optString("btn_close", C.btnClose);
 		C.noChoice = texts.optString("lbl_no_choice", C.noChoice);
 		C.lblChoice = texts.optString("lbl_choice", C.lblChoice);
+		C.qrViewOpened = texts.optString("a11y_qr_view_opened", C.qrViewOpened);
 
 		C.lblCloseTimeout = texts.optString("lbl_close_timeout", C.lblCloseTimeout);
 	}
@@ -94,6 +97,8 @@ public class JSONParser {
 		C.noNetworkMessage = errors.optString("no_network_message", C.noNetworkMessage);
 		C.getConfigMessage = errors.optString("get_config_message", C.getConfigMessage);
 		C.badConfigMessage = errors.optString("bad_config_message", C.badConfigMessage);
+		C.badVerificationMessage =
+				errors.optString("bad_verification_message", C.badVerificationMessage);
 		C.badVersionMessage = errors.optString("bad_version_message", C.badVersionMessage);
 
 		C.problemQrCodeMessage = errors.optString(
@@ -106,6 +111,12 @@ public class JSONParser {
 				"bad_device_message", C.badDeviceMessage);
 		C.cameraPermissionRequired = errors.optString(
 				"camera_permission_required_message", C.cameraPermissionRequired);
+		C.errorTitleDefault = errors.optString(
+				"error_title_default", C.errorTitleDefault);
+		C.errorTitleNetwork = errors.optString(
+				"error_title_network", C.errorTitleNetwork);
+		C.errorTitleBadVersion = errors.optString(
+				"error_title_bad_version", C.errorTitleBadVersion);
 	}
 
 	private static void parseJsonColors(JSONObject appConfig) {
@@ -126,7 +137,11 @@ public class JSONParser {
 		C.mainWindowShadow = colors.optString("main_window_shadow", C.mainWindowShadow);
 		C.errorWindow = colors.optString("error_window", C.errorWindow);
 		C.errorWindowShadow = colors.optString("error_window_shadow", C.errorWindowShadow);
+		C.errorWindowCloseButtonFocused = colors.optString(
+				"error_window_close_btn_focused", C.errorWindowCloseButtonFocused);
 		C.btnBackground = colors.optString("btn_background", C.btnBackground);
+		C.btnBackgroundFocused = colors.optString(
+				"btn_background_focused", C.btnBackgroundFocused);
 		C.btnForeground = colors.optString("btn_foreground", C.btnForeground);
 		C.btnVerifyForeground = colors.optString(
 				"btn_verify_foreground", C.btnVerifyForeground);
@@ -136,6 +151,8 @@ public class JSONParser {
 				"btn_verify_background_center", C.btnVerifyBackgroundCenter);
 		C.btnVerifyBackgroundEnd = colors.optString(
 				"btn_verify_background_end", C.btnVerifyBackgroundEnd);
+		C.btnVerifyBackgroundFocused = colors.optString(
+				"btn_verify_background_focused", C.btnVerifyBackgroundFocused);
 		C.lblBackground = colors.optString("lbl_background", C.lblBackground);
 		C.lblForeground = colors.optString("lbl_foreground", C.lblForeground);
 		C.lblShadow = colors.optString("lbl_shadow", C.lblShadow);
@@ -159,6 +176,8 @@ public class JSONParser {
 				"lbl_close_timeout_shadow", C.lblCloseTimeoutShadow);
 		C.lblOuterInnerContainerDivider = colors.optString(
 				"lbl_outer_inner_container_divider", C.lblOuterInnerContainerDivider);
+		C.btnCloseViewFocused = colors.optString(
+				"btn_close_view_focused", C.btnCloseViewFocused);
 	}
 
 	private static void parseJsonVersions(JSONObject appConfig) throws JSONException {
