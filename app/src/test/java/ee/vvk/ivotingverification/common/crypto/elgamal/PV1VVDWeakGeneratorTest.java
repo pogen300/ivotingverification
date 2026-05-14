@@ -21,7 +21,7 @@ import ee.vvk.ivotingverification.common.crypto.x509.X509PublicKey;
 import ee.vvk.ivotingverification.common.math.group.modp.ModPElement;
 import ee.vvk.ivotingverification.common.math.group.modp.ModPGroup;
 
-public class PV2VVDWeakGeneratorTest {
+public class PV1VVDWeakGeneratorTest {
 
     @Test
     public void acceptsIdentityGeneratorParameterAndCiphertext() throws Exception {
@@ -77,7 +77,7 @@ public class PV2VVDWeakGeneratorTest {
     }
 
     private static String readFixture(String name) throws Exception {
-        return new String(Files.readAllBytes(Path.of(System.getenv("IVXV_POCROOT"), "p-v2", name)),
+        return new String(Files.readAllBytes(Path.of(System.getenv("IVXV_POCROOT"), "p-v1", name)),
                 StandardCharsets.UTF_8);
     }
 }
